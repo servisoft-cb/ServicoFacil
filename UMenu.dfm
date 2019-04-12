@@ -1,6 +1,6 @@
 object fMenu: TfMenu
-  Left = 263
-  Top = 37
+  Left = 292
+  Top = 85
   Width = 801
   Height = 650
   Caption = 'Menu'
@@ -25,7 +25,7 @@ object fMenu: TfMenu
   OnShow = FormShow
   DesignSize = (
     785
-    592)
+    591)
   PixelsPerInch = 96
   TextHeight = 13
   object Image2: TImage
@@ -239,7 +239,7 @@ object fMenu: TfMenu
     Left = 0
     Top = 0
     Width = 69
-    Height = 592
+    Height = 591
     Align = alLeft
     AutoSize = True
     ButtonHeight = 68
@@ -302,6 +302,10 @@ object fMenu: TfMenu
       object ConfiguraoEmail1: TMenuItem
         Caption = 'Configura'#231#227'o Email'
         OnClick = ConfiguraoEmail1Click
+      end
+      object ConfiguraoCertificado1: TMenuItem
+        Caption = 'Configura'#231#227'o Certificado'
+        OnClick = ConfiguraoCertificado1Click
       end
       object N2: TMenuItem
         Caption = '-'

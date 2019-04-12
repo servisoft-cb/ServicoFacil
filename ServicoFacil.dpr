@@ -33,7 +33,6 @@ uses
   uCadFilial_Download in '..\ssfacil\uCadFilial_Download.pas' {frmCadFilial_Download},
   uCadFilial_Email in '..\ssfacil\uCadFilial_Email.pas' {frmCadFilial_Email},
   uCadFilialRelatorios in '..\ssfacil\uCadFilialRelatorios.pas' {frmCadFilialRelatorios},
-  UCadFolhaEncargo in '..\ssfacil\UCadFolhaEncargo.pas' {frmCadFolhaEncargo},
   uCadFuncionario in '..\ssfacil\uCadFuncionario.pas' {frmCadFuncionario},
   UCadNatureza in '..\ssfacil\UCadNatureza.pas' {frmCadNatureza},
   UCadNotaServico in '..\ssfacil\UCadNotaServico.pas' {frmCadNotaServico},
@@ -84,7 +83,6 @@ uses
   UDMCadOrdemServico in '..\ssfacil\UDMCadOrdemServico.pas' {DMCadOrdemServico: TDataModule},
   UDMCadOS in '..\ssfacil\UDMCadOS.pas' {DMCadOS: TDataModule},
   UDMCadPais in '..\ssfacil\UDMCadPais.pas' {DMCadPais: TDataModule},
-  UDMCadParametros in '..\ssfacil\UDMCadParametros.pas' {DMCadParametros: TDataModule},
   UDMCadPessoa in '..\ssfacil\UDMCadPessoa.pas' {DMCadPessoa: TDataModule},
   UDMCadProvedor in '..\ssfacil\UDMCadProvedor.pas' {DMCadProvedor: TDataModule},
   UDMCadRecibo in '..\ssfacil\UDMCadRecibo.pas' {DMCadRecibo: TDataModule},
@@ -122,9 +120,7 @@ uses
   rsDBUtils in '..\rslib\nova\rsDBUtils.pas',
   LogProvider in '..\logs\src\LogProvider.pas',
   LogTypes in '..\logs\src\LogTypes.pas',
-  uNFeConsts in '..\NFe 3.10\NFESrv\uNFeConsts.pas',
   USel_ContaOrc in '..\ssfacil\USel_ContaOrc.pas' {frmSel_ContaOrc},
-  UCadParametros in '..\ssfacil\UCadParametros.pas' {frmCadParametros},
   UCadContas_Ret in '..\ssfacil\UCadContas_Ret.pas' {frmCadContas_Ret},
   UDMCob_Eletronica in '..\ssfacil\UDMCob_Eletronica.pas' {DMCob_Eletronica: TDataModule},
   uRelBoletoBanrisul in '..\ssfacil\uRelBoletoBanrisul.pas' {fRelBoletoBanrisul},
@@ -191,7 +187,13 @@ uses
   USel_Produto_Preco in '..\ssfacil\USel_Produto_Preco.pas' {frmSel_Produto_Preco},
   USel_Produto_Lote in '..\ssfacil\PedidoLoja\USel_Produto_Lote.pas' {frmSel_Produto_Lote},
   uCadOrdemServico_Entrega in '..\ssfacil\uCadOrdemServico_Entrega.pas' {frmCadOrdemServico_Entrega},
-  USel_Titulos in '..\ssfacil\USel_Titulos.pas' {frmSel_Titulos};
+  USel_Titulos in '..\ssfacil\USel_Titulos.pas' {frmSel_Titulos},
+  uConsAgenda in '..\ssfacil\uConsAgenda.pas' {frmConsAgenda},
+  uNFeConsts in '..\NFe 4.00\NFeSrv\uNFeConsts.pas',
+  uGrava_Erro in '..\ssfacil\uGrava_Erro.pas',
+  udmNFSe in 'EnvioAcbr\udmNFSe.pas' {dmNFSe: TDataModule},
+  UCadFilial_Certificado in 'UCadFilial_Certificado.pas' {frmCadFilial_Certificado},
+  UDMCadFilial_Certificado in 'UDMCadFilial_Certificado.pas' {DMFilial_Certificado: TDataModule};
 
 {$R *.res}
 

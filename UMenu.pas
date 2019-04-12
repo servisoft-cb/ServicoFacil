@@ -103,6 +103,7 @@ type
     N5: TMenuItem;
     ImportarClientesCSV1: TMenuItem;
     GerarNotaServioArquivoCSV1: TMenuItem;
+    ConfiguraoCertificado1: TMenuItem;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Pais1Click(Sender: TObject);
     procedure UF1Click(Sender: TObject);
@@ -150,6 +151,7 @@ type
     procedure tbNotaFiscalClick(Sender: TObject);
     procedure ImportarClientesCSV1Click(Sender: TObject);
     procedure GerarNotaServioArquivoCSV1Click(Sender: TObject);
+    procedure ConfiguraoCertificado1Click(Sender: TObject);
   private
     { Private declarations }
     procedure prc_Habilita_Menu;
@@ -177,13 +179,14 @@ var
 
 implementation
 
-uses DmdDatabase, uFrmSobre, UCadPais, UCadUF, UCadCidade, UCadPessoa, UCadCondPgto, UCadRegime_Trib, UCadParametros,
+uses DmdDatabase, uFrmSobre, UCadPais, UCadUF, UCadCidade, UCadPessoa, UCadCondPgto, UCadRegime_Trib,
   UCadContas, UCadTipoCobranca, UCadAgenda, UCadFuncionario, UCadBanco, UCadContrato, UCadServico, UCadProvedor,
   UCadNatureza, UCadNotaServico, UCadServico_Int, uCadSetor, UImportarXML_NFSe, UCadAtividade_Cid, UConsNotas_SER,
   uUtilPadrao, UDMUtil, UGerar_NFSe, UCadOrdemServico, UBaixaOrdemServico, UConsOrdemServico, UCadFeriado, UCadFeriado_Fixo,
   uCadContratoServ, uCadCNAE, UCadTab_IBPT, UCadContabilista, UCDataInfo, uCadOS_Simples, uCadOrdemServico_Param,
   UCadConfig_Email, UCadRecibo, DateUtils, UConsOrdemServico_Mat, UCadFilial,
-  DmdDatabase_NFeBD, UImp_Cliente_Txt, UGerar_NFSe_txt;
+  DmdDatabase_NFeBD, UImp_Cliente_Txt, UGerar_NFSe_txt,
+  UCadFilial_Certificado;
 
 {$R *.dfm}
 
@@ -286,7 +289,7 @@ end;
 
 procedure TfMenu.Parmetros1Click(Sender: TObject);
 begin
-  OpenForm(TfrmCadParametros,wsMaximized);
+  prc_ShellExecute('SSFacil_Parametros.exe');
 end;
 
 procedure TfMenu.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -708,7 +711,12 @@ begin
   OpenForm(TfrmGerar_NFSe_txt,wsMaximized,'');
 end;
 
-initialization
-  RLConsts.SetVersion(3,72,'B');
+//initialization
+//  RLConsts.SetVersion(3,72,'B');
+
+procedure TfMenu.ConfiguraoCertificado1Click(Sender: TObject);
+begin
+  OpenForm(TfrmCadFilial_Certificado, wsMaximized);
+end;
 
 end.
