@@ -57,7 +57,6 @@ type
     procedure AbrirDadosNota;
     function Caracter_XML_Invalido(Dados: string): string;
     function GetMontaDescricaoImpressao: string;
-    procedure Cancelar_Nfse;
     function GetNotaCancelada: Boolean;
     procedure ImprimirNfse;
     procedure ConsultaNfse;
@@ -78,7 +77,7 @@ type
     procedure prc_Abrir_NotaServico_Comunicacao(ID : Integer);
     function fnc_monta_discriminacao : String;
     procedure ConfigurarComponente;
-   
+    procedure Cancelar_Nfse;
 
     procedure TestarCertificado;
     class procedure Gerar(pID_NOTA: Integer);
@@ -95,7 +94,7 @@ implementation
 
 //uses UnitLibrary, DataModulo, pnfsNFSe;
 
-uses pnfsNFSe, DmdDatabase, uUtilPadrao;
+uses pnfsNFSe, DmdDatabase, uUtilPadrao, ACBrNFSeWebServices;
 
 {$R *.dfm}
 
@@ -213,17 +212,6 @@ var
 begin
   AbrirDadosNota;
 
-  {fNumeroLote := fID_NOTA;
-  isql_Emitente := ExecSql(' SELECT EMPRA14CGC AS NDOC, EMPRA20IMUNIC AS IMUN, EMPRA60RAZAOSOC AS NOM, EMPRA60NOMEFANT AS FANT, '
-   +' EMPRA60END AS ENDE, '''' AS LGR, EMPRIENDNRO AS NR, EMPRA60BAI AS BAI , EMPRA60CID AS CID, CNAEFISCAL, EMPRIMUNICODFED, '
-   +' EMPRA2UF AS EST, '''' AS CEND, EMPRA8CEP AS CEP, EMPRA60EMAIL AS EMAIL, EMPRA20FONE AS NFON1, '''' AS PFON1  '
-   +' FROM EMPRESA where EMPRICOD  = ' + QuotedStr(EmpresaPadrao));
-
-  Isql_Tomador := ExecSql(' SELECT IIF(CLIEA14CGC <> '''', CLIEA14CGC, CLIEA11CPF) as NDOC, CLIEA60EMAIL, CLIEA60RAZAOSOC AS NOM, CLIEA60ENDRES AS ENDE, CLIEA60CIDRES AS CID, '
-  +' CLIEA60BAIRES AS BAI, CLIEA2UFRES AS EST, '''' AS CEND, '''' AS LGR, CLIEA5NROENDRES AS NR, CLIEA8CEPRES as CEP, '
-  +' CLIEA15FONE1 AS NFON, '''' AS PFON, CLIEA60URL AS HPAG, CLIEA60EMAIL AS EMAIL '
-  +' FROM CLIENTE where CLIEA13ID  = ' + QuotedStr(IsqlDadosNota.fieldbyname('COD_CADCLI').AsString));}
-
   ACBrNFSe1.NotasFiscais.Clear;
   with ACBrNFSe1 do
   begin
@@ -239,7 +227,7 @@ begin
         Competencia := FormatDateTime('yyyy/mm',fDMCadNotaServico.cdsNotaServico_ImpDTEMISSAO_CAD.AsDateTime);
 
 //      Numero := fDMCadNotaServico.cdsNotaServico_ImpNUMNOTA.AsString;
-      Numero := fDMCadNotaServico.cdsNotaServicoNUMRPS.AsString;
+      Numero := fDMCadNotaServico.cdsNotaServicoNUMNOTA.AsString;
       IdentificacaoRps.Tipo   := trRPS;
 //      IdentificacaoRps.Numero := NumNFSe;
       IdentificacaoRps.Numero := fDMCadNotaServico.cdsNotaServicoNUMRPS.AsString;
@@ -267,9 +255,6 @@ begin
         IncentivadorCultural := snSim
       else
         IncentivadorCultural := snNao;
-
-      //IncentivadorCultural   := snNao;
-      //OptanteSimplesNacional := snNao;
 
       if ACBrNFSe1.Configuracoes.WebServices.Ambiente = taProducao then
         Producao := snSim
@@ -401,8 +386,10 @@ begin
       Servico.Discriminacao := Caracter_XML_Invalido(xDiscriminacao);
 
       //Cleomar
-      //if Trim(IsqlDadosNota.FieldByName('OBS').AsString) <> '' then
-      //  OutrasInformacoes := IsqlDadosNota.FieldByName('OBS').AsString;
+      if Trim(fDMCadNotaServico.cdsNotaServico_ImpMOTIVO_CANCELAMENTO.AsString) <> '' then
+        OutrasInformacoes := Trim(fDMCadNotaServico.cdsNotaServico_ImpMOTIVO_CANCELAMENTO.AsString)
+      else
+       OutrasInformacoes := fDMCadNotaServico.vMotivoCancelamento;
 
       PrestadorServico.IdentificacaoPrestador.Cnpj := TirarAcento(fDMCadNotaServico.cdsNotaServico_ImpCNPJ_CPF_FIL.AsString);
       PrestadorServico.IdentificacaoPrestador.InscricaoMunicipal := fDMCadNotaServico.cdsNotaServico_ImpINSCMUNICIPAL_FIL.AsString;
@@ -740,22 +727,15 @@ begin
   ACBrNFSe1.NotasFiscais.Items[0].GravarXML(ExtractFileName(Caminho), ExtractFilePath(Caminho)); 
 
   //COD_CADSERVICO := sqlNOTASERVICO_COMUNICACAOCOD_CADSERVICO.asinteger;
-  NFSE_NUMERO := sqlNOTASERVICO_COMUNICACAONFSE_NUMERO.AsString;
-
-  if sqlNOTASERVICO_COMUNICACAO.Locate('TIPO', '2', []) then
-    sqlNOTASERVICO_COMUNICACAO.Edit
-  else
-    sqlNOTASERVICO_COMUNICACAO.Insert;
-
-  //if COD_CADSERVICO > 0 then
-  //  sqlNOTASERVICO_COMUNICACAOCOD_CADSERVICO.asinteger := COD_CADSERVICO;
-
-  sqlNOTASERVICO_COMUNICACAONFSE_NUMERO.AsString := NFSE_NUMERO;
-  sqlNOTASERVICO_COMUNICACAOID_NOTASERVICO.AsInteger := fID_NOTA;
-  sqlNOTASERVICO_COMUNICACAOTIPO.AsString := '2';
-  sqlNOTASERVICO_COMUNICACAOPROTOCOLO.AsString := ACBrNFSe1.WebServices.CancNfse.CodigoCancelamento;
-  sqlNOTASERVICO_COMUNICACAOXML.LoadFromFile(Caminho);
-  sqlNOTASERVICO_COMUNICACAO.Post;    
+  fDMCadNotaServico.prc_Localizar(fDMCadNotaServico.cdsNotaServico_ConsultaID.AsInteger);
+  if not (fDMCadNotaServico.cdsNotaServico.IsEmpty) then
+  begin
+    fDMCadNotaServico.cdsNotaServico.Edit;
+    fDMCadNotaServico.cdsNotaServicoSTATUS_RPS.AsString := '2';
+    fDMCadNotaServico.cdsNotaServicoDTCANCELAMENTO.AsDateTime := ACBrNFSe1.WebServices.CancNfse.DataHora;
+    fDMCadNotaServico.cdsNotaServico.Post;
+    fDMCadNotaServico.cdsNotaServico.ApplyUpdates(0);
+  end;
 end;
 
 procedure TdmNFSe.Cancelar_Nfse;
@@ -783,14 +763,7 @@ begin
   Codigo := '2';
 
   try
-
-    {if ACBrNFSe1.Configuracoes.Geral.Provedor in [proDBSeller, proBHISS] then
-      ACBrNFSe1.NotasFiscais.Items[0].NFSe.Numero :=
-        FormatDateTime('yyyy', ACBrNFSe1.NotasFiscais.Items[0].NFSe.DataEmissao) +
-        FormatFloat('00000000000', StrToIntDef(ACBrNFSe1.NotasFiscais.Items[0].NFSe.Numero, 0));}
-
-    ACBrNFSe1.NotasFiscais.Items[0].NFSe.Numero := NumNFSe;   
-
+    ACBrNFSe1.NotasFiscais.Items[0].NFSe.Numero := NumNFSe;
     try
       if ACBrNFSe1.CancelarNFSe(Codigo) then
       begin
