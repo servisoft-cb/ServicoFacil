@@ -1,8 +1,8 @@
 object dmNFSe: TdmNFSe
   OldCreateOrder = False
   OnCreate = DataModuleCreate
-  Left = 301
-  Top = 128
+  Left = 349
+  Top = 207
   Height = 419
   Width = 619
   object ACBrNFSe1: TACBrNFSe
@@ -45,7 +45,7 @@ object dmNFSe: TdmNFSe
     TamanhoFonte = 6
     FormatarNumeroDocumentoNFSe = True
     PrintDialog = True
-    Left = 192
+    Left = 128
     Top = 12
   end
   object sqlNOTASERVICO_COMUNICACAO: TRxQuery
@@ -58,7 +58,7 @@ object dmNFSe: TdmNFSe
       'WHERE ID_NOTASERVICO = :ID_NOTASERVICO')
     Macros = <>
     Left = 92
-    Top = 88
+    Top = 112
     ParamData = <
       item
         DataType = ftInteger
@@ -125,8 +125,8 @@ object dmNFSe: TdmNFSe
     Attempts = 3
     DefaultCharset = UTF_8
     IDECharset = CP1252
-    Left = 254
-    Top = 108
+    Left = 166
+    Top = 12
   end
   object qFilial_Certificados: TSQLQuery
     MaxBlobSize = -1
@@ -152,8 +152,8 @@ object dmNFSe: TdmNFSe
       'WHERE F.ID = :ID'
       '')
     SQLConnection = dmDatabase.scoDados
-    Left = 248
-    Top = 208
+    Left = 288
+    Top = 112
     object qFilial_CertificadosNUMERO_SERIE: TStringField
       FieldName = 'NUMERO_SERIE'
       Size = 100
@@ -205,8 +205,8 @@ object dmNFSe: TdmNFSe
       'from notaservico_comunicacao n'
       'where n.id_notaservico = :ID_NOTASERVICO')
     SQLConnection = dmDatabase.scoDados
-    Left = 88
-    Top = 176
+    Left = 400
+    Top = 40
     object qNotaServico_ComunicacaoID: TIntegerField
       FieldName = 'ID'
       Required = True

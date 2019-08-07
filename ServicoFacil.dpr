@@ -193,7 +193,9 @@ uses
   uGrava_Erro in '..\ssfacil\uGrava_Erro.pas',
   udmNFSe in 'EnvioAcbr\udmNFSe.pas' {dmNFSe: TDataModule},
   UCadFilial_Certificado in 'UCadFilial_Certificado.pas' {frmCadFilial_Certificado},
-  UDMCadFilial_Certificado in 'UDMCadFilial_Certificado.pas' {DMFilial_Certificado: TDataModule};
+  UDMCadFilial_Certificado in 'UDMCadFilial_Certificado.pas' {DMFilial_Certificado: TDataModule},
+  UCadTipoCobranca_Itens in '..\ssfacil\UCadTipoCobranca_Itens.pas' {frmCadTipoCobranca_Itens},
+  UCadNotaServico_acbr in 'UCadNotaServico_acbr.pas' {frmCadNotaServico_acbr};
 
 {$R *.res}
 

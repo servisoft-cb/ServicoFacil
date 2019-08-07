@@ -186,7 +186,7 @@ uses DmdDatabase, uFrmSobre, UCadPais, UCadUF, UCadCidade, UCadPessoa, UCadCondP
   uCadContratoServ, uCadCNAE, UCadTab_IBPT, UCadContabilista, UCDataInfo, uCadOS_Simples, uCadOrdemServico_Param,
   UCadConfig_Email, UCadRecibo, DateUtils, UConsOrdemServico_Mat, UCadFilial,
   DmdDatabase_NFeBD, UImp_Cliente_Txt, UGerar_NFSe_txt,
-  UCadFilial_Certificado;
+  UCadFilial_Certificado, UCadNotaServico_acbr;
 
 {$R *.dfm}
 
@@ -362,8 +362,25 @@ begin
 end;
 
 procedure TfMenu.NotaServio1Click(Sender: TObject);
+var
+  sds: TSQLDataSet;
+  vEnviaAcbr : String;
 begin
-  OpenForm(TfrmCadNotaServico,wsMaximized);
+  sds := TSQLDataSet.Create(nil);
+  sds.SQLConnection := dmDatabase.scoDados;
+  sds.NoMetadata    := True;
+  sds.GetMetadata   := False;
+  try
+    sds.CommandText := 'SELECT FIRST(1)ENVIO_NFSE FROM FILIAL WHERE ENVIO_NFSE = ' + QuotedStr('A');
+    sds.Open;
+    vEnviaAcbr := sds.FieldByName('ENVIO_NFSE').AsString
+  finally
+    FreeAndNil(sds);
+  end;
+  if vEnviaAcbr = 'A' then
+    OpenForm(TfrmCadNotaServico_acbr,wsMaximized)
+  else
+    OpenForm(TfrmCadNotaServico,wsMaximized);
 end;
 
 procedure TfMenu.CadastroServiosInterno1Click(Sender: TObject);
@@ -698,7 +715,8 @@ end;
 
 procedure TfMenu.tbNotaFiscalClick(Sender: TObject);
 begin
-  OpenForm(TfrmCadNotaServico,wsMaximized,'');
+  NotaServio1Click(Sender);
+//  OpenForm(TfrmCadNotaServico,wsMaximized,'');
 end;
 
 procedure TfMenu.ImportarClientesCSV1Click(Sender: TObject);

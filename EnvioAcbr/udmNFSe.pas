@@ -48,10 +48,10 @@ type
   private
     { Private declarations }
     fNumeroLote, fID_NOTA: Integer;
+    DataEmissaoRet : TDateTime;
     //Isql_Tomador, isql_Emitente, isqlParametro, IsqlDadosNota: TQuery;
     NumNFSe:String;
     OffLine:Boolean;
-    procedure GerarNFSe;
     function GetAliquotaCad_Servico: Currency;
     function GetCodigoMunicipio(Estado, Cidade: string): string;
     procedure AbrirDadosNota;
@@ -59,7 +59,6 @@ type
     function GetMontaDescricaoImpressao: string;
     function GetNotaCancelada: Boolean;
     procedure ImprimirNfse;
-    procedure ConsultaNfse;
 
     procedure SetID_NOTA(Value: Integer);
     procedure GravarCancelamento;
@@ -69,9 +68,13 @@ type
   public
     { Public declarations }
     fDMCadNotaServico: TDMCadNotaServico;
-    
+    vNumeroLote : Integer;
+    vCont : Integer;
+
+    procedure AlimentaComponente;
     procedure Enviar;
     procedure Enviar_Nfse;
+    procedure ConsultaNfse;
 
     procedure EnviarEmailNfse;
     procedure prc_Abrir_NotaServico_Comunicacao(ID : Integer);
@@ -119,26 +122,18 @@ end;
 
 function TdmNFSe.GetNotaEnviada: Boolean;
 begin
-  //result := sqlNOTASERVICO_COMUNICACAO.Locate('TIPO', '1', []);
-//  result := qNotaServico_Comunicacao.Locate('TIPO', '1', []);
-  Result := SQLLocate('NOTASERVICO','ID','STATUS_RPS',fDMCadNotaServico.cdsNotaServico_ConsultaID.AsString) = '1';
+  Result := SQLLocate('NOTASERVICO','ID','COD_AUTENCIDADE_RET',fDMCadNotaServico.cdsNotaServico_ConsultaID.AsString) <> '';
 end;
 
 procedure TdmNFSe.ConfigurarComponente;
 var
   Ok: Boolean;
 begin
-    //isqlParametro := ExecSql(' SELECT EMPRIEMAILPORTA, EMPRA50EMAILSENHA, EMPRA60NOMEFANT, EMPRA100CERTIFSERIE, EMPRA35CERTIFSENHA, EMPRIMUNICODFED,SENHA, USER_WEB, '
-    //+' AGUARDARCONSULTARETORNO, CONSULTARLOTEAPOSENVIO, INTERVALOTENTATIVAS,EMPRA100PROXYHOST, TIPO_RPS, '
-    //+' EMPRA100CAMINHOLOGO, EMPRA50EMAILHOST, EMPRA75EMAILUSUARIO, EMPRA1SSL, EMPRA1TSL, EMPRA50EMAILSENHA, EMPRA75EMAILUSUARIO, PREFEITURA, EMPRA60EMAIL, EMPRIWSAMBIENTE, EMPRA60EMAILCOPIA FROM EMPRESA WHERE EMPRICOD = '
-    //+ EmpresaPadrao);
-
    qFilial_Certificados.Close;
    qFilial_Certificados.ParamByName('ID').AsInteger := fDMCadNotaServico.cdsFilialID.AsInteger;
    qFilial_Certificados.Open;
 
    {$IFDEF ACBrNFSeOpenSSL}
-    //ACBrNFSe1.Configuracoes.Certificados.Certificado := isqlParametro.fieldbyname('EMPRA100CERTIFSERIE').AsString;
 
     ACBrNFSe1.Configuracoes.Certificados.Certificado := qFilial_CertificadosNUMERO_SERIE.AsString;
     ACBrNFSe1.Configuracoes.Certificados.Senha       := qFilial_CertificadosSENHA;
@@ -170,7 +165,6 @@ begin
     if qFilial_CertificadosINTERVALOTENTATIVAS.AsInteger > 0 then
       ACBrNFSe1.Configuracoes.WebServices.IntervaloTentativas := qFilial_CertificadosINTERVALOTENTATIVAS.AsInteger;
 
-  //ACBrNFSe1.Configuracoes.Arquivos.PathSalvar := ExtractFilePath(Application.ExeName) + 'Xml-Nfs';
   ACBrNFSe1.Configuracoes.Arquivos.PathSalvar := fDMCadNotaServico.cdsParametrosENDXMLNFSE.AsString;
   ACBrNFSe1.Configuracoes.Arquivos.PathSchemas := ExtractFilePath(Application.ExeName) + 'Schemas';
   ACBrNFSe1.Configuracoes.Arquivos.PathNFSe := fDMCadNotaServico.cdsParametrosENDXMLNFSE.AsString;
@@ -192,7 +186,7 @@ begin
   if not Assigned(dmNFSe) then
     dmNFSe:= TdmNFSe.Create(nil);
 
-  dmNFSe.SetID_NOTA(pID_NOTA);
+//  dmNFSe.SetID_NOTA(pID_NOTA);
   dmNFSe.ConsultaNfse;
 end;
 
@@ -201,7 +195,7 @@ begin
   result := 0;
 end;
 
-procedure TdmNFSe.GerarNFSe;
+procedure TdmNFSe.AlimentaComponente;
 var
   ValorISS, BaseCalculo: Currency;
   OK: Boolean;
@@ -212,10 +206,9 @@ var
 begin
   AbrirDadosNota;
 
-  ACBrNFSe1.NotasFiscais.Clear;
   with ACBrNFSe1 do
   begin
-    NotasFiscais.NumeroLote := IntToStr(fDMCadNotaServico.cdsNotaServicoNUMRPS.AsInteger);
+    NotasFiscais.NumeroLote := IntToStr(fDMCadNotaServico.cdsNotaServico_ImpNUMRPS.AsInteger);
 
     with NotasFiscais.Add.NFSe do
     begin
@@ -226,11 +219,9 @@ begin
       else
         Competencia := FormatDateTime('yyyy/mm',fDMCadNotaServico.cdsNotaServico_ImpDTEMISSAO_CAD.AsDateTime);
 
-//      Numero := fDMCadNotaServico.cdsNotaServico_ImpNUMNOTA.AsString;
       Numero := fDMCadNotaServico.cdsNotaServicoNUMNOTA.AsString;
       IdentificacaoRps.Tipo   := trRPS;
-//      IdentificacaoRps.Numero := NumNFSe;
-      IdentificacaoRps.Numero := fDMCadNotaServico.cdsNotaServicoNUMRPS.AsString;
+      IdentificacaoRps.Numero := fDMCadNotaServico.cdsNotaServico_ImpNUMRPS.AsString;
       IdentificacaoRps.Serie  := fDMCadNotaServico.cdsNotaServico_ImpSERIE.AsString;
 
       DataEmissao     := fDMCadNotaServico.cdsNotaServico_ImpDTEMISSAO.AsDateTime;
@@ -280,7 +271,6 @@ begin
       Servico.Valores.OutrasRetencoes      := 0.00;
       Servico.Valores.DescontoCondicionado := fDMCadNotaServico.cdsNotaServico_ImpVLR_DESCONTO_COND.AsFloat;
 
-//      BaseCalculo := Servico.Valores.ValorServicos - Servico.Valores.ValorDeducoes - Servico.Valores.DescontoIncondicionado;
       BaseCalculo := fDMCadNotaServico.cdsNotaServico_ImpBASE_CALCULO.AsFloat;
 
       ValorISS := fDMCadNotaServico.cdsNotaServico_ImpVLR_ISS.AsFloat + fDMCadNotaServico.cdsNotaServico_ImpVLR_ISS_RETIDO.AsFloat;
@@ -294,7 +284,7 @@ begin
           Servico.Valores.ValorIssRetido := 0.00;
         end
         else begin
-          Servico.Valores.ValorIss       := fDMCadNotaServico.cdsNotaServico_ImpVLR_ISS.AsFloat;
+          Servico.Valores.ValorIss       := fDMCadNotaServico.cdsNotaServico_ImpVLR_ISS_RETIDO.AsFloat;
           Servico.Valores.ValorIssRetido := fDMCadNotaServico.cdsNotaServico_ImpVLR_ISS_RETIDO.AsFloat;
         end;
       end
@@ -306,16 +296,6 @@ begin
       end;
 
       Servico.Valores.ValorLiquidoNfse := fDMCadNotaServico.cdsNotaServico_ImpVLR_LIQUIDO_NFSE.AsFloat;
-{        Servico.Valores.ValorServicos -
-        Servico.Valores.ValorPis -
-        Servico.Valores.ValorCofins -
-        Servico.Valores.ValorInss -
-        Servico.Valores.ValorIr -
-        Servico.Valores.ValorCsll -
-        Servico.Valores.OutrasRetencoes -
-        Servico.Valores.ValorIssRetido -
-        Servico.Valores.DescontoIncondicionado -
-        Servico.Valores.DescontoCondicionado;}
 
       Servico.ItemListaServico  := fDMCadNotaServico.cdsNotaServico_ImpCOD_SERVICO.AsString;
       Servico.xItemListaServico := fDMCadNotaServico.cdsNotaServico_ImpNOME_SERVICO.AsString;
@@ -328,35 +308,28 @@ begin
       if ACBrNFSe1.Configuracoes.WebServices.Ambiente <> taProducao  then
         Servico.CodigoCnae := '6511102';
 
-      { #ver
-      if cdsCad_ServicoCODIGOTRIBUTACAOMUNICIPIO.AsString <> '' then
-        Servico.CodigoTributacaoMunicipio := cdsCad_ServicoCODIGOTRIBUTACAOMUNICIPIO.AsString
+      if Trim(fDMCadNotaServico.cdsNotaServico_ImpCOD_ATIVIDADE_CID.AsString) <> '' then
+        Servico.CodigoTributacaoMunicipio := fDMCadNotaServico.cdsNotaServico_ImpCOD_ATIVIDADE_CID.AsString
       else
-        if isqlParametro.fieldbyname('CODIGOTRIBUTACAOMUNICIPIO').AsString <> '' then
-          Servico.CodigoTributacaoMunicipio := isqlParametro.fieldbyname('CODIGOTRIBUTACAOMUNICIPIO').AsString;}
+        Servico.CodigoTributacaoMunicipio := fDMCadNotaServico.cdsFilialCOD_TRIBUTACAO_MUNICIPIO.AsString;
 
-      Servico.CodigoTributacaoMunicipio := fDMCadNotaServico.cdsFilialCOD_TRIBUTACAO_MUNICIPIO.AsString;
-          
       if NaturezaOperacao = no2 then /// FORA DO MUNICIPIO
         servico.CodigoMunicipio := fDMCadNotaServico.cdsNotaServico_ImpCODMUNICIPIO_CLI.AsString;
 
       if Servico.CodigoMunicipio = '' then
         Servico.CodigoMunicipio := fDMCadNotaServico.cdsNotaServico_ImpCODMUNICIPIO_FIL.AsString;
 
-      {if isqlParametro.fieldbyname('EXIGIBILIDADEISS').AsString <> '' then
-        EXIGIBILIDADEISS := ExecSql('SELECT CODIGO FROM TABELA_NOMES WHERE COD_TABELA_NOMES = '
-          + isqlParametro.fieldbyname('EXIGIBILIDADEISS').AsString).fieldbyname('CODIGO').AsString;
-
-      //EXIGIBILIDADEISS := '2';
-      Servico.ExigibilidadeISS := StrToExigibilidadeISS(ok, EXIGIBILIDADEISS); }
+      //Muda campos quando for homologação
+//      if ACBrNFSe1.Configuracoes.WebServices.Ambiente = taHomologacao then
+//      begin
+//        Servico.CodigoMunicipio := '999';
+//        IdentificacaoRps.Serie := '8';
+//      end;
 
      // Informar para Saatri
       Servico.CodigoPais    := StrToInt(Monta_Numero(fDMCadNotaServico.cdsNotaServico_ImpCODPAIS_CLI.AsString,0));
-      //Servico.Discriminacao := IsqlDadosNota.fieldbyname('DESCRICAO_SERVICO').AsString;
       Servico.Discriminacao := fnc_monta_discriminacao;
 
-      //verificar com Russimar 30/03/2019  Cleomar
-      vDiscriminacao := '';
       fDMCadNotaServico.cdsNotaServico_Imp_Itens.Close;
       fDMCadNotaServico.sdsNotaServico_Imp_Itens.ParamByName('ID').AsInteger := fDMCadNotaServico.cdsNotaServico_ImpID.AsInteger;
       fDMCadNotaServico.cdsNotaServico_Imp_Itens.Open;
@@ -371,21 +344,22 @@ begin
            (fDMCadNotaServico.cdsParametrosIMP_MESANO_REF_NOITEM_NFSE.AsString = 'S') then
           vDiscriminacao := vDiscriminacao + ' Ref.: ' + FormatFloat('00',fDMCadNotaServico.cdsNotaServico_ImpMES_REF.AsInteger) + '/' +
                             fDMCadNotaServico.cdsNotaServico_ImpANO_REF.AsString;
+
+        with Servico.ItemServico.Add do
+        begin
+          Descricao := vDiscriminacao;
+          Quantidade := 1;
+          ValorUnitario := fDMCadNotaServico.cdsNotaServico_Imp_ItensVLR_UNITARIO.AsFloat;
+          ValorServicos := fDMCadNotaServico.cdsNotaServico_Imp_ItensVLR_TOTAL.AsFloat;
+          if SQLLocate('NFSE_NATUREZA','ID','RETER_ISSQN',fDMCadNotaServico.cdsNotaServico_ImpID_NATUREZA.AsString) = 'S' then
+            ValorIss      := fDMCadNotaServico.cdsNotaServico_ImpVLR_ISS_RETIDO.AsFloat;
+        end;
+
         fDMCadNotaServico.cdsNotaServico_Imp_Itens.Next;
       end;
-      with Servico.ItemServico.Add do
-      begin
-        Descricao := vDiscriminacao;
-        Quantidade := 1;
-        ValorUnitario := fDMCadNotaServico.cdsNotaServico_Imp_ItensVLR_UNITARIO.AsFloat;
-        ValorServicos := fDMCadNotaServico.cdsNotaServico_Imp_ItensVLR_TOTAL.AsFloat;
-      end;
-      //*******************
-
       xDiscriminacao := Servico.Discriminacao;
       Servico.Discriminacao := Caracter_XML_Invalido(xDiscriminacao);
 
-      //Cleomar
       if Trim(fDMCadNotaServico.cdsNotaServico_ImpMOTIVO_CANCELAMENTO.AsString) <> '' then
         OutrasInformacoes := Trim(fDMCadNotaServico.cdsNotaServico_ImpMOTIVO_CANCELAMENTO.AsString)
       else
@@ -394,7 +368,6 @@ begin
       PrestadorServico.IdentificacaoPrestador.Cnpj := TirarAcento(fDMCadNotaServico.cdsNotaServico_ImpCNPJ_CPF_FIL.AsString);
       PrestadorServico.IdentificacaoPrestador.InscricaoMunicipal := fDMCadNotaServico.cdsNotaServico_ImpINSCMUNICIPAL_FIL.AsString;
       PrestadorServico.IdentificacaoPrestador.Senha := qFilial_CertificadosSENHA.AsString;
-      //PrestadorServico.IdentificacaoPrestador.FraseSecreta := isqlParametro.fieldbyname('FRASE_SECRETA').AsString;
       PrestadorServico.IdentificacaoPrestador.cUF := StrToInt(Monta_Numero(fDMCadNotaServico.cdsNotaServico_ImpCODUF_FIL.AsString,2));
       PrestadorServico.RazaoSocial := Caracter_XML_Invalido(fDMCadNotaServico.cdsNotaServico_ImpNOME_FIL.AsString );
       PrestadorServico.NomeFantasia := Caracter_XML_Invalido(fDMCadNotaServico.cdsNotaServico_ImpFANTASIA_FIL.AsString);
@@ -419,45 +392,21 @@ begin
       Prestador.InscricaoMunicipal := fDMCadNotaServico.cdsNotaServico_ImpINSCMUNICIPAL_FIL.AsString;
       Prestador.cUF                := StrToInt(Monta_Numero(fDMCadNotaServico.cdsNotaServico_ImpCODUF_FIL.AsString,2));
 
-      //Cleomar
-      //if isqlParametro.fieldbyname('SENHA').AsString <> '' then
       if Trim(qFilial_CertificadosSENHA.AsString) <> '' then
         Prestador.Senha := qFilial_CertificadosSENHA.AsString;
 
-      {if isqlParametro.fieldbyname('FRASE_SECRETA').AsString <> '' then
-        Prestador.FraseSecreta := isqlParametro.fieldbyname('FRASE_SECRETA').AsString;}
-
-      //Cleomar  
-      //CodigoMunicipio := GetCodigoMunicipio(Isql_Tomador.fieldbyname('EST').AsString, Isql_Tomador.fieldbyname('CID').AsString);
       Tomador.Endereco.CodigoMunicipio := fDMCadNotaServico.cdsNotaServico_ImpCODMUNICIPIO_CLI.AsString;
 
       Tomador.IdentificacaoTomador.CpfCnpj := Monta_Numero(fDMCadNotaServico.cdsNotaServico_ImpCNPJ_CPF_CLI.AsString,0);
 
-      //with ExecSql(' SELECT IM, CLIEA20IE FROM CLIENTE WHERE CLIEA13ID = '
-        //+ quotedstr(IsqlDadosNota.fieldbyname('COD_CADCLI').AsString)) do
-{      begin
-        if FieldByName('IM').AsString <> '' then
-          Tomador.IdentificacaoTomador.InscricaoMunicipal := FieldByName('IM').AsString;
-
-        if FieldByName('CLIEA20IE').AsString <> '' then
-          Tomador.IdentificacaoTomador.InscricaoEstadual := FieldByName('CLIEA20IE').AsString;
-      end;}
-
-      //      Tomador.IdentificacaoTomador.DocTomadorEstrangeiro
-
       Tomador.RazaoSocial := Caracter_XML_Invalido(fDMCadNotaServico.cdsNotaServico_ImpNOME_CLIENTE.AsString);
       Tomador.Endereco.Endereco := Caracter_XML_Invalido(fDMCadNotaServico.cdsNotaServico_ImpENDERECO_CLI.AsString);
       Tomador.Endereco.Numero := fDMCadNotaServico.cdsNotaServico_ImpNUM_END_CLI.AsString;
-      Tomador.Endereco.Complemento := Caracter_XML_Invalido(fDMCadNotaServico.cdsNotaServico_ImpCOMPLEMENTO_END.AsString);                  
+      Tomador.Endereco.Complemento := Caracter_XML_Invalido(fDMCadNotaServico.cdsNotaServico_ImpCOMPLEMENTO_END.AsString);
       Tomador.Endereco.Bairro := Caracter_XML_Invalido(fDMCadNotaServico.cdsNotaServico_ImpBAIRRO_CLI.AsString);
       Tomador.Endereco.UF := fDMCadNotaServico.cdsNotaServico_ImpUF_CLI.AsString;
       Tomador.Endereco.CEP := fDMCadNotaServico.cdsNotaServico_ImpCEP_CLI.AsString;
       Tomador.Endereco.xMunicipio := fDMCadNotaServico.cdsNotaServico_ImpCIDADE_CLI.AsString;
-
-{      if CIDADE_TOMADOR <> '' then
-        Tomador.Endereco.xMunicipio_Incidencia := CIDADE_TOMADOR
-      else
-        Tomador.Endereco.xMunicipio_Incidencia := Isql_Tomador.fieldbyname('CID').AsString;}
 
       Tomador.Contato.Telefone := fDMCadNotaServico.cdsNotaServico_ImpDDD_CLI.AsString + fDMCadNotaServico.cdsNotaServico_ImpFONE_CLI.AsString;
       Tomador.Contato.Email    := fDMCadNotaServico.cdsNotaServico_ImpEMAIL_CLI.AsString;
@@ -476,36 +425,6 @@ end;
 
 function TdmNFSe.GetMontaDescricaoImpressao: string;
 begin
-  //Cleomar 
-{  if IsqlDadosNota.FieldByName('AISS').AsCurrency > 0 then
-    Result := Result + '(' +
-      'ISSQN ' + (formatfloat('0.0#%', IsqlDadosNota.FieldByName('AISS').AsCurrency)) +
-      (formatfloat(' #,##0.00', IsqlDadosNota.FieldByName('VISS').AsCurrency)) + ')  ';
-
-  if IsqlDadosNota.FieldByName('AIRF').AsCurrency > 0 then
-    Result := Result + '('
-      + 'IRRF ' + formatfloat('0.0#%', IsqlDadosNota.FieldByName('AIRF').AsCurrency)
-      + formatfloat(' #,##0.00', IsqlDadosNota.FieldByName('VIRF').AsCurrency) + ')  ';
-
-  if IsqlDadosNota.FieldByName('ACSLL').AsCurrency > 0 then
-    Result := Result + '('
-      + 'CSLL ' + (formatfloat('0.0#%', IsqlDadosNota.FieldByName('ACSLL').AsCurrency)) +
-      (formatfloat(' #,##0.00', IsqlDadosNota.FieldByName('CSSL').AsCurrency)) + ')  ';
-
-  if IsqlDadosNota.FieldByName('ACOF').AsCurrency > 0 then
-    Result := Result + '('
-      + 'Cofins ' + (formatfloat('0.0#%', IsqlDadosNota.FieldByName('ACOF').AsCurrency)) +
-      (formatfloat(' #,##0.00', IsqlDadosNota.FieldByName('VCOF').AsCurrency)) + ')  ';
-
-  if IsqlDadosNota.FieldByName('APIS').AsCurrency > 0 then
-    Result := Result + '('
-      + 'PIS ' + (formatfloat('0.0#%', IsqlDadosNota.FieldByName('APIS').AsCurrency)) +
-      (formatfloat(' #,##0.00', IsqlDadosNota.FieldByName('VPIS').AsCurrency)) + ')  ';
-
-  if IsqlDadosNota.FieldByName('AINSS').AsCurrency > 0 then
-    Result := Result + '('
-      + 'INSS ' + (formatfloat('0.0#%', IsqlDadosNota.FieldByName('AINSS').AsCurrency)) +
-      (formatfloat(' #,##0.00', IsqlDadosNota.FieldByName('VINSS').AsCurrency)) + ')  ';}
 end;
 
 function TdmNFSe.GetCodigoMunicipio(Estado,
@@ -515,8 +434,6 @@ begin
 
   if (Cidade = '') or (Estado = '') then exit;
 
-  //Result := ExecSql(' SELECT ID FROM CIDADE WHERE UPPER(NOME) = '
-   // +QuotedStr(UpperCase(Cidade))+' AND SIGLA = '+ QuotedStr(Estado)).FieldByName('ID').AsString;
 end;
 
 
@@ -543,8 +460,6 @@ begin
   fDMCadNotaServico.cdsNotaServico_Imp_Itens.First;
 
   NumNFSe := fDMCadNotaServico.cdsNotaServico_ImpNUMNOTA.AsString;
-  //IsqlDadosNota := ExecSql(' SELECT * FROM V_NOTA_SERVICO WHERE COD = ' + IntToStr(fID_NOTA));
-  //NumNFSe := GetNFSE_NUMERO;
 end;
 
 procedure TdmNFSe.Enviar_Nfse;
@@ -554,20 +469,15 @@ var
 begin
   inherited;
 
-  ConfigurarComponente;
-  //Caminho := ExtractFilePath(Application.ExeName) + 'Xml-Nfs\Nfs.xml';
   Caminho := fDMCadNotaServico.cdsParametrosENDXMLNFSE.AsString + '\Nfs.xml';
-
   vNumLote := IntToStr(fID_NOTA);
-  ACBrNFSe1.NotasFiscais.Clear;
-  GerarNFSe;
+//  GerarNFSe;
 
   if (OffLine) or (GetNotaEnviada) then
   begin
     if OffLine then
     begin
       ACBrNFSe1.NotasFiscais.GerarNFSe;
-      //ACBrNFSe1.NotasFiscais.GravarXML(ExtractFilePath(Application.ExeName) + 'Xml-Nfs\NfsOffline.xml');
       ACBrNFSe1.NotasFiscais.GravarXML(fDMCadNotaServico.cdsParametrosENDXMLNFSE.AsString + '\NfsOffline.xml');
     end;
 
@@ -577,70 +487,47 @@ begin
         Abort;
     end;
 
-    if ACBrNFSe1.NotasFiscais.Items[0].NFSe.Numero = '' then
-      //ACBrNFSe1.NotasFiscais.Items[0].NFSe.Numero := IsqlDadosNota.fieldbyname('NNOT').AsString;
-      ACBrNFSe1.NotasFiscais.Items[0].NFSe.Numero := fDMCadNotaServico.cdsNotaServico_ImpNUMNOTA.AsString;
+    if ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.Numero = '' then
+      ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.Numero := fDMCadNotaServico.cdsNotaServico_ImpNUMNOTA.AsString;
 
-    //Cleomar Ver o que é esse Código
-    ACBrNFSe1.NotasFiscais.Items[0].NFSe.CodigoVerificacao := fDMCadNotaServico.cdsNotaServico_ImpCOD_AUTENCIDADE_RET.AsString;
+    ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.CodigoVerificacao := fDMCadNotaServico.cdsNotaServico_ImpCOD_AUTENCIDADE_RET.AsString;
 
     if OffLine then
-      ACBrNFSe1.NotasFiscais.Items[0].NFSe.Producao := snNao;
+      ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.Producao := snNao;
 
-    if ACBrNFSe1.NotasFiscais.Items[0].NFSe.Numero = '' then
-      ACBrNFSe1.NotasFiscais.Items[0].NFSe.Numero := '0';
+    if ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.Numero = '' then
+      ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.Numero := '0';
 
-    if ACBrNFSe1.NotasFiscais.Items[0].NFSe.CodigoVerificacao = '' then
-      ACBrNFSe1.NotasFiscais.Items[0].NFSe.CodigoVerificacao := '0';
+    if ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.CodigoVerificacao = '' then
+      ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.CodigoVerificacao := '0';
 
     if GetNotaCancelada then
     begin
-      ACBrNFSe1.NotasFiscais.Items[0].NFSe.Cancelada := snSim;
-      ACBrNFSe1.NotasFiscais.Items[0].NFSe.NfseCancelamento.DataHora := fDMCadNotaServico.cdsNotaServico_ImpDTRECEBIMENTO_RET.AsDateTime;
-    end;
-    if qNotaServico_ComunicacaoCODIGOVERIFICACAO.AsString <> '' then
-    begin
-      //ExecSql(' update NOTASERVICO SET NUMERO_RPS = '+ACBrNFSe1.NotasFiscais.Items[0].NFSe.IdentificacaoRps.Numero
-      //+ ', CODIGO_VERIFICACAO = ''' + ACBrNFSe1.NotasFiscais.Items[0].NFSe.CodigoVerificacao + ''''
-      //+ ' WHERE ID = '+ inttostr(fID_NOTA),1);
+      ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.Cancelada := snSim;
+      ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.NfseCancelamento.DataHora := fDMCadNotaServico.cdsNotaServico_ImpDTRECEBIMENTO_RET.AsDateTime;
     end;
 
     ImprimirNfse;
   end
   else begin
     //TestarNotaPodeEnviar;
-    try
-      (ACBrNFSe1.Enviar(vNumLote, False));
-
-      if ACBrNFSe1.NotasFiscais.Items[0].NFSe.CodigoVerificacao <> '' then
+//    try
+      (ACBrNFSe1.Enviar(vNumeroLote, False));
+      for i := 0 to vCont - 1 do
       begin
-        ACBrNFSe1.NotasFiscais.GravarXML(Caminho);
-        prc_Gravar_Retorno(caminho);
-
-//        sqlNOTASERVICO_COMUNICACAO.Edit;
-//        sqlNOTASERVICO_COMUNICACAOTIPO.AsString := '1';
-//        sqlNOTASERVICO_COMUNICACAOID_NOTASERVICO.AsInteger := fID_NOTA;
-//        sqlNOTASERVICO_COMUNICACAOPROTOCOLO.AsString := ACBrNFSe1.NotasFiscais.Items[0].NFSe.Protocolo;
-//        sqlNOTASERVICO_COMUNICACAOCODIGOVERIFICACAO.AsString := ACBrNFSe1.NotasFiscais.Items[0].NFSe.CodigoVerificacao;
-//        sqlNOTASERVICO_COMUNICACAONFSE_NUMERO.AsString := ACBrNFSe1.NotasFiscais.Items[0].NFSe.Numero;
-//        sqlNOTASERVICO_COMUNICACAOXML.LoadFromFile(Caminho);
-//        sqlNOTASERVICO_COMUNICACAO.Post;
-
-        //ExecSql(' update NOTASERVICO SET NUMERO_RPS = '+ACBrNFSe1.NotasFiscais.Items[0].NFSe.IdentificacaoRps.Numero
-        //+ ', CODIGO_VERIFICACAO = ''' + ACBrNFSe1.NotasFiscais.Items[0].NFSe.CodigoVerificacao + ''''
-        //+ ' WHERE ID = '+ inttostr(fID_NOTA),1);
-      end
-      else
-      if not OffLine then
-      begin
-        Sleep(1000);
-        ConsultaNfse;
+        if ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.CodigoVerificacao <> '' then
+        begin
+          DataEmissaoRet := Now;
+          ACBrNFSe1.NotasFiscais.GravarXML(Caminho);
+          prc_Gravar_Retorno(caminho);
+        end;
       end;
-
-    except
-      on E: Exception do
-        raise Exception.Create(e.message);
-    end;
+      Sleep(1000);
+      ConsultaNfse;
+//    except
+//      on E: Exception do
+//        raise Exception.Create(e.message);
+//    end;
   end;
 
   ACBrNFSe1.NotasFiscais.Clear;
@@ -656,31 +543,24 @@ begin
   vCodigoVerificacao := '';
 
   ACBrNFSe1.NotasFiscais.Clear;
-  GerarNFSe;
+  AlimentaComponente;
 
-  if ACBrNFSe1.ConsultarNFSeporRps(ACBrNFSe1.NotasFiscais.Items[0].NFSe.IdentificacaoRps.Numero,
-    ACBrNFSe1.NotasFiscais.Items[0].NFSe.IdentificacaoRps.Serie,
-    TipoRPSToStr(ACBrNFSe1.NotasFiscais.Items[0].NFSe.IdentificacaoRps.Tipo)) then
+  if ACBrNFSe1.ConsultarNFSeporRps(ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.IdentificacaoRps.Numero,
+    ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.IdentificacaoRps.Serie,
+    TipoRPSToStr(ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.IdentificacaoRps.Tipo)) then
   begin
     vCodigoVerificacao :=
-      ACBrNFSe1.WebServices.ConsNfseRps.RetornoNFSe.ListaNfse.CompNfse.Items[0].Nfse.CodigoVerificacao;
+      ACBrNFSe1.WebServices.ConsNfseRps.RetornoNFSe.ListaNfse.CompNfse.Items[vCont].Nfse.CodigoVerificacao;
 
     if vCodigoVerificacao <> '' then
     begin
+      DataEmissaoRet := Now;
       ACBrNFSe1.NotasFiscais.Clear;
-      GerarNFSe;
-      ACBrNFSe1.NotasFiscais.Items[0].NFSe.CodigoVerificacao := vCodigoVerificacao;
-      ACBrNFSe1.NotasFiscais.Items[0].GravarXML(ExtractFileName(Caminho), ExtractFilePath(Caminho));
+      AlimentaComponente;
+      ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.CodigoVerificacao := vCodigoVerificacao;
+      ACBrNFSe1.NotasFiscais.Items[vCont].GravarXML(ExtractFileName(Caminho), ExtractFilePath(Caminho));
       GetNotaEnviada;
-
-      sqlNOTASERVICO_COMUNICACAO.Edit;
-      sqlNOTASERVICO_COMUNICACAOTIPO.AsString := '1';
-      sqlNOTASERVICO_COMUNICACAOID_NOTASERVICO.AsInteger := fID_NOTA;
-      sqlNOTASERVICO_COMUNICACAOPROTOCOLO.AsString := vProtocolo;
-      sqlNOTASERVICO_COMUNICACAOCODIGOVERIFICACAO.AsString := vCodigoVerificacao;
-      sqlNOTASERVICO_COMUNICACAONFSE_NUMERO.AsString := ACBrNFSe1.NotasFiscais.Items[0].NFSe.IdentificacaoRps.Numero;
-      sqlNOTASERVICO_COMUNICACAOXML.LoadFromFile(Caminho);
-      sqlNOTASERVICO_COMUNICACAO.Post;
+      prc_Gravar_Retorno(Caminho);
     end;
     
     ImprimirNfse;
@@ -724,9 +604,7 @@ var
   NFSE_NUMERO, Caminho: string;
 begin
   Caminho := ExtractFilePath(Application.ExeName) + 'Xml-Nfs\Nfs.xml';
-  ACBrNFSe1.NotasFiscais.Items[0].GravarXML(ExtractFileName(Caminho), ExtractFilePath(Caminho)); 
-
-  //COD_CADSERVICO := sqlNOTASERVICO_COMUNICACAOCOD_CADSERVICO.asinteger;
+  ACBrNFSe1.NotasFiscais.Items[vCont].GravarXML(ExtractFileName(Caminho), ExtractFilePath(Caminho));
   fDMCadNotaServico.prc_Localizar(fDMCadNotaServico.cdsNotaServico_ConsultaID.AsInteger);
   if not (fDMCadNotaServico.cdsNotaServico.IsEmpty) then
   begin
@@ -754,7 +632,7 @@ begin
 
   ACBrNFSe1.NotasFiscais.Clear;
   ConfigurarComponente;
-  GerarNFSe;
+  AlimentaComponente;
 
 {  if not (InputQuery('Cancelar NFSe', 'Código de Cancelamento: '
     + #13 + '1 - Erro de Emissão'
@@ -842,6 +720,7 @@ begin
   end;    
 
 end;
+
 
 procedure TdmNFSe.sqlNOTASERVICO_COMUNICACAOBeforePost(DataSet: TDataSet);
 begin
@@ -1159,6 +1038,7 @@ begin
       vDiscriminacao := vDiscriminacao + vTexto;
     end;
   end;
+  Result := vDiscriminacao;
   //**************************
 
 end;
@@ -1176,12 +1056,14 @@ begin
   if not (fDMCadNotaServico.cdsNotaServico.IsEmpty) then
   begin
     fDMCadNotaServico.cdsNotaServico.Edit;
-    fDMCadNotaServico.cdsNotaServicoSTATUS_RPS.AsString := '1';
-    fDMCadNotaServico.cdsNotaServicoPROTOCOLO.AsString := ACBrNFSe1.NotasFiscais.Items[0].NFSe.Protocolo;
-    fDMCadNotaServico.cdsNotaServicoCOD_AUTENCIDADE_RET.AsString := ACBrNFSe1.NotasFiscais.Items[0].NFSe.CodigoVerificacao;
-    fDMCadNotaServico.cdsNotaServicoNUMNOTA.AsString := ACBrNFSe1.NotasFiscais.Items[0].NFSe.Numero;
-    fDMCadNotaServico.cdsNotaServicoDTRECEBIMENTO_RET.AsDateTime := ACBrNFSe1.NotasFiscais.Items[0].NFSe.dhRecebimento;
+    fDMCadNotaServico.cdsNotaServicoPROTOCOLO.AsString := ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.Protocolo;
+    fDMCadNotaServico.cdsNotaServicoCOD_AUTENCIDADE_RET.AsString := ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.CodigoVerificacao;
+    fDMCadNotaServico.cdsNotaServicoNUMNOTA.AsString := ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.Numero;
+    fDMCadNotaServico.cdsNotaServicoDTRECEBIMENTO_RET.AsDateTime := ACBrNFSe1.NotasFiscais.Items[vCont].NFSe.dhRecebimento;
+    if fDMCadNotaServico.cdsNotaServicoDT_EMISSAO_RET.AsString = '' then
+      fDMCadNotaServico.cdsNotaServicoDT_EMISSAO_RET.AsString := DateTimeToStr(DataEmissaoRet);
     fDMCadNotaServico.cdsNotaServicoXML.LoadFromFile(Caminho);
+
     fDMCadNotaServico.cdsNotaServico.Post;
     fDMCadNotaServico.cdsNotaServico.ApplyUpdates(0);
   end;

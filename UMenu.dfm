@@ -1,6 +1,6 @@
 object fMenu: TfMenu
-  Left = 292
-  Top = 85
+  Left = 591
+  Top = 47
   Width = 801
   Height = 650
   Caption = 'Menu'
@@ -188,7 +188,7 @@ object fMenu: TfMenu
     Top = 16
     Width = 458
     Height = 89
-    Caption = 'Servico F'#225'cil'
+    Caption = 'Servi'#231'o F'#225'cil'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -80
