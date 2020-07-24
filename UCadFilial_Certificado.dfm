@@ -23,7 +23,7 @@ object frmCadFilial_Certificado: TfrmCadFilial_Certificado
     Top = 0
     Width = 833
     Height = 556
-    ActivePage = TS_Cadastro
+    ActivePage = TS_Consulta
     ActivePageDefault = TS_Consulta
     Align = alClient
     BackgroundColor = 16752448
@@ -31,7 +31,7 @@ object frmCadFilial_Certificado: TfrmCadFilial_Certificado
     FlatColor = clGray
     ParentBackgroundColor = False
     TabColors.Shadow = clSilver
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     FixedDimension = 19
     object TS_Consulta: TRzTabSheet

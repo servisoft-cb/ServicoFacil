@@ -633,7 +633,7 @@ begin
           vVlr_Cofins  := fDMCadNotaServico.cdsNotaServicoVLR_COFINS.AsFloat;
         end;
 
-        vID_Mov := fDMMovimento.fnc_Gravar_Movimento(fDMCadNotaServico.cdsNotaServicoID_MOVIMENTO.AsInteger,
+        vID_Mov := fDMMovimento.fnc_Gravar_Movimento(DMCadNotaServico.cdsNotaServicoID_MOVIMENTO.AsInteger,
                                                      fDMCadNotaServico.cdsNotaServicoFILIAL.AsInteger,0,
                                                      fDMCadNotaServico.cdsNotaServicoID_SERVICO.AsInteger,
                                                      fDMCadNotaServico.cdsNotaServico_ItensID_SERVICO_INT.AsInteger,
@@ -672,7 +672,7 @@ begin
                                                      fDMCadNotaServico.cdsNotaServicoID_VENDEDOR.AsInteger,0,
                                                      fDMCadNotaServico.cdsNotaServicoPERC_COMISSAO.AsFloat,0,0,1,0,
                                                      fDMCadNotaServico.cdsNotaServicoRETEM_PISCOFINS.AsString,
-                                                     0,0,0,0,0,0);
+                                                     0,0,0,0,0,0,0,0,0,0);
 
       end;
 
@@ -3971,7 +3971,7 @@ begin
                                                fDMCadNotaServico.cdsNotaServicoID_VENDEDOR.AsInteger,0,
                                                fDMCadNotaServico.cdsNotaServicoPERC_COMISSAO.AsFloat,0,0,1,0,
                                                fDMCadNotaServico.cdsNotaServicoRETEM_PISCOFINS.AsString,
-                                               0,0,0,0,0,0);
+                                               0,0,0,0,0,0,0,0,0,0);
 end;
 
 procedure TfrmCadNotaServico_acbr.prc_Le_fCds;
