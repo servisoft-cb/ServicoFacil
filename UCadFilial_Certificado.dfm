@@ -215,7 +215,7 @@ object frmCadFilial_Certificado: TfrmCadFilial_Certificado
           OnClick = btnInserirClick
         end
         object btnExcluir: TNxButton
-          Left = 152
+          Left = 305
           Top = 1
           Width = 153
           Height = 28
@@ -290,7 +290,7 @@ object frmCadFilial_Certificado: TfrmCadFilial_Certificado
           OnClick = btnExcluirClick
         end
         object btnPesquisar: TNxButton
-          Left = 458
+          Left = 152
           Top = 1
           Width = 153
           Height = 28
@@ -363,7 +363,7 @@ object frmCadFilial_Certificado: TfrmCadFilial_Certificado
           OnClick = btnPesquisarClick
         end
         object btnImprimir: TNxButton
-          Left = 305
+          Left = 458
           Top = 1
           Width = 153
           Height = 28
@@ -959,7 +959,7 @@ object frmCadFilial_Certificado: TfrmCadFilial_Certificado
               TabOrder = 5
             end
             object DBEdit5: TDBEdit
-              Left = 121
+              Left = 122
               Top = 149
               Width = 185
               Height = 21

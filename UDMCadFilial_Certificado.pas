@@ -56,7 +56,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    ctCommand : String;
+    ctCommand: String;
     vMsgErro: string;
     procedure prc_Localizar(ID: Integer); //-1 = Inclusão
     procedure prc_Inserir;
@@ -102,7 +102,7 @@ end;
 
 procedure TDMFilial_Certificado.prc_Inserir;
 var
-  vAux : String;
+  vAux: String;
 begin
   if not cdsFilial_Certificado.Active then
     prc_Localizar(-1);
