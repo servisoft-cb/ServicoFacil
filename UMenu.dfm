@@ -1,6 +1,6 @@
 object fMenu: TfMenu
-  Left = 591
-  Top = 47
+  Left = 293
+  Top = 90
   Width = 801
   Height = 650
   Caption = 'Menu'
@@ -24,8 +24,8 @@ object fMenu: TfMenu
   OnCreate = FormCreate
   OnShow = FormShow
   DesignSize = (
-    785
-    591)
+    793
+    599)
   PixelsPerInch = 96
   TextHeight = 13
   object Image2: TImage
@@ -239,7 +239,7 @@ object fMenu: TfMenu
     Left = 0
     Top = 0
     Width = 69
-    Height = 591
+    Height = 599
     Align = alLeft
     AutoSize = True
     ButtonHeight = 68

@@ -22,8 +22,8 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
   object RzPageControl1: TRzPageControl
     Left = 0
     Top = 0
-    Width = 985
-    Height = 657
+    Width = 993
+    Height = 665
     ActivePage = TS_Consulta
     ActivePageDefault = TS_Consulta
     Align = alClient
@@ -41,8 +41,8 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
       object SMDBGrid1: TSMDBGrid
         Left = 0
         Top = 152
-        Width = 981
-        Height = 290
+        Width = 989
+        Height = 298
         Align = alClient
         BorderStyle = bsNone
         Ctl3D = False
@@ -159,7 +159,6 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
             FieldName = 'SERIE_SUBSTITUIDO'
             Title.Alignment = taCenter
             Title.Caption = 'S'#233'rie Substitu'#237'do'
-            Width = 64
             Visible = True
           end
           item
@@ -227,7 +226,6 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
           item
             Expanded = False
             FieldName = 'NOME_PROVEDOR'
-            Width = 64
             Visible = True
           end
           item
@@ -249,7 +247,7 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
       object pnlPesquisa: TPanel
         Left = 0
         Top = 33
-        Width = 981
+        Width = 989
         Height = 86
         Align = alTop
         Color = clSilver
@@ -509,8 +507,8 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
       end
       object StaticText1: TStaticText
         Left = 0
-        Top = 442
-        Width = 981
+        Top = 450
+        Width = 989
         Height = 17
         Align = alBottom
         BorderStyle = sbsSunken
@@ -528,7 +526,7 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
       object Panel11: TPanel
         Left = 0
         Top = 0
-        Width = 981
+        Width = 989
         Height = 33
         Align = alTop
         Color = clSilver
@@ -832,8 +830,8 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
       end
       object Panel12: TPanel
         Left = 0
-        Top = 607
-        Width = 981
+        Top = 615
+        Width = 989
         Height = 27
         Align = alBottom
         Color = clSilver
@@ -942,7 +940,7 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
       object pnlEnvio: TPanel
         Left = 0
         Top = 119
-        Width = 981
+        Width = 989
         Height = 33
         Align = alTop
         Color = 16770764
@@ -1430,8 +1428,8 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
       end
       object gbxLote_Protocolo: TRzGroupBox
         Left = 0
-        Top = 459
-        Width = 981
+        Top = 467
+        Width = 989
         Height = 148
         Align = alBottom
         BorderColor = clBlue
@@ -1550,7 +1548,7 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
           end
         end
         object Panel6: TPanel
-          Left = 837
+          Left = 845
           Top = 18
           Width = 139
           Height = 125
@@ -1850,7 +1848,7 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
         object SMDBGrid3: TSMDBGrid
           Left = 169
           Top = 18
-          Width = 668
+          Width = 676
           Height = 125
           Align = alClient
           BorderStyle = bsNone
@@ -1981,7 +1979,7 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 981
+        Width = 989
         Height = 33
         Align = alTop
         Color = 8404992
@@ -2210,7 +2208,7 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
       object pnlCadastro: TPanel
         Left = 0
         Top = 33
-        Width = 981
+        Width = 989
         Height = 116
         Align = alTop
         Enabled = False
@@ -2218,7 +2216,7 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
         object pnlNota: TPanel
           Left = 1
           Top = 1
-          Width = 979
+          Width = 987
           Height = 26
           Align = alTop
           Color = clSilver
@@ -2316,7 +2314,7 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
         object pnlCliente: TPanel
           Left = 1
           Top = 27
-          Width = 979
+          Width = 987
           Height = 88
           Align = alClient
           BevelInner = bvLowered
@@ -2675,8 +2673,8 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
       object RzPageControl2: TRzPageControl
         Left = 0
         Top = 149
-        Width = 981
-        Height = 485
+        Width = 989
+        Height = 493
         ActivePage = TabSheet1
         ActivePageDefault = TabSheet1
         Align = alClient
@@ -2686,10 +2684,10 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
         object TabSheet1: TRzTabSheet
           Caption = ' Dados '
           object pnlValores: TPanel
-            Left = 737
+            Left = 745
             Top = 0
             Width = 240
-            Height = 462
+            Height = 470
             Align = alRight
             Color = clSilver
             Enabled = False
@@ -3118,13 +3116,13 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
           object Panel7: TPanel
             Left = 0
             Top = 0
-            Width = 737
-            Height = 462
+            Width = 745
+            Height = 470
             Align = alClient
             TabOrder = 0
             DesignSize = (
-              737
-              462)
+              745
+              470)
             object RzGroupBox2: TRzGroupBox
               Left = 10
               Top = 2
@@ -4087,7 +4085,6 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
                     FieldName = 'lkNome_Conta'
                     Title.Alignment = taCenter
                     Title.Caption = 'Nome Conta'
-                    Width = 64
                     Visible = True
                   end
                   item
@@ -4587,8 +4584,8 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
           object Panel3: TPanel
             Left = 0
             Top = 0
-            Width = 977
-            Height = 462
+            Width = 985
+            Height = 470
             Align = alClient
             Enabled = False
             TabOrder = 0
@@ -5349,8 +5346,8 @@ object frmCadNotaServico_acbr: TfrmCadNotaServico_acbr
   end
   object stat1: TStatusBar
     Left = 0
-    Top = 657
-    Width = 985
+    Top = 665
+    Width = 993
     Height = 19
     Panels = <
       item

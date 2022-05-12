@@ -18,7 +18,7 @@ object frmGerar_NFSe_txt: TfrmGerar_NFSe_txt
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 912
+    Width = 920
     Height = 105
     Align = alTop
     Color = clSilver
@@ -254,8 +254,8 @@ object frmGerar_NFSe_txt: TfrmGerar_NFSe_txt
   object RzPageControl1: TRzPageControl
     Left = 0
     Top = 105
-    Width = 912
-    Height = 491
+    Width = 920
+    Height = 498
     ActivePage = TabSheet1
     ActivePageDefault = TabSheet1
     Align = alClient
@@ -267,8 +267,8 @@ object frmGerar_NFSe_txt: TfrmGerar_NFSe_txt
       object RzGroupBox2: TRzGroupBox
         Left = 0
         Top = 0
-        Width = 908
-        Height = 296
+        Width = 916
+        Height = 303
         Align = alClient
         BorderColor = clBlue
         BorderInner = fsButtonUp
@@ -289,8 +289,8 @@ object frmGerar_NFSe_txt: TfrmGerar_NFSe_txt
         object SMDBGrid1: TSMDBGrid
           Left = 38
           Top = 18
-          Width = 865
-          Height = 273
+          Width = 873
+          Height = 280
           Align = alClient
           Ctl3D = False
           DataSource = DMCadOS.dsmExtrato
@@ -469,7 +469,7 @@ object frmGerar_NFSe_txt: TfrmGerar_NFSe_txt
           Left = 5
           Top = 18
           Width = 33
-          Height = 273
+          Height = 280
           Align = alLeft
           Color = clSilver
           TabOrder = 1
@@ -553,8 +553,8 @@ object frmGerar_NFSe_txt: TfrmGerar_NFSe_txt
       end
       object gbxConta_Orcamento: TRzGroupBox
         Left = 0
-        Top = 296
-        Width = 908
+        Top = 303
+        Width = 916
         Height = 131
         Align = alBottom
         Caption = ' Servi'#231'o do contrato '
@@ -563,7 +563,7 @@ object frmGerar_NFSe_txt: TfrmGerar_NFSe_txt
         object SMDBGrid2: TSMDBGrid
           Left = 34
           Top = 14
-          Width = 873
+          Width = 881
           Height = 116
           Align = alClient
           Ctl3D = False
@@ -749,14 +749,14 @@ object frmGerar_NFSe_txt: TfrmGerar_NFSe_txt
       end
       object Panel2: TPanel
         Left = 0
-        Top = 427
-        Width = 908
+        Top = 434
+        Width = 916
         Height = 41
         Align = alBottom
         Color = 16769217
         TabOrder = 2
         DesignSize = (
-          908
+          916
           41)
         object btnConfBaixa: TNxButton
           Left = 5
@@ -912,8 +912,8 @@ object frmGerar_NFSe_txt: TfrmGerar_NFSe_txt
       object SMDBGrid3: TSMDBGrid
         Left = 0
         Top = 0
-        Width = 908
-        Height = 468
+        Width = 916
+        Height = 475
         Align = alClient
         Ctl3D = False
         DataSource = DMCadOS.dsmExtrato_Nao

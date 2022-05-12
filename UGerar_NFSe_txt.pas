@@ -142,7 +142,7 @@ begin
   ckRecibo.Visible := (fDMCadOS.qParametrosUSA_RECIBO_NFSE.AsString = 'S');
   btnGerar_Recibo.Visible := (fDMCadOS.qParametrosUSA_RECIBO_NFSE.AsString = 'S');
   ceQtdDigitos.AsInteger  := fDMCadOS.qParametrosQTD_DIG_COD_CLI_CTB.AsInteger;
-  fDMCadNotaServico.prc_Abrir_cdsCliente('');
+  fDMCadNotaServico.prc_Abrir_cdsCliente('','NSE');
 end;
 
 procedure TfrmGerar_NFSe_txt.btnConfBaixaClick(Sender: TObject);

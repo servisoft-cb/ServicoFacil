@@ -672,7 +672,7 @@ begin
                                                      fDMCadNotaServico.cdsNotaServicoID_VENDEDOR.AsInteger,0,
                                                      fDMCadNotaServico.cdsNotaServicoPERC_COMISSAO.AsFloat,0,0,1,0,
                                                      fDMCadNotaServico.cdsNotaServicoRETEM_PISCOFINS.AsString,
-                                                     0,0,0,0,0,0,0,0,0,0);
+                                                     0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 
       end;
 
@@ -804,7 +804,7 @@ begin
   fDMCadNotaServico := TDMCadNotaServico.Create(Self);
   oDBUtils.SetDataSourceProperties(Self, fDMCadNotaServico);
   fDMMovimento := TDMMovimento.Create(Self);
-  fDMCadNotaServico.prc_Abrir_cdsCliente('S');
+  fDMCadNotaServico.prc_Abrir_cdsCliente('S','NSE');
   vEnvioACBR := fDMCadNotaServico.cdsFilialENVIO_NFSE.AsString = 'A';
 
   vFilial_Sel := 0;
@@ -3971,7 +3971,7 @@ begin
                                                fDMCadNotaServico.cdsNotaServicoID_VENDEDOR.AsInteger,0,
                                                fDMCadNotaServico.cdsNotaServicoPERC_COMISSAO.AsFloat,0,0,1,0,
                                                fDMCadNotaServico.cdsNotaServicoRETEM_PISCOFINS.AsString,
-                                               0,0,0,0,0,0,0,0,0,0);
+                                               0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 end;
 
 procedure TfrmCadNotaServico_acbr.prc_Le_fCds;
