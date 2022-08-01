@@ -218,7 +218,9 @@ uses
   uCadOrdemServico_VlrEntrada in '..\ssfacil\uCadOrdemServico_VlrEntrada.pas' {frmCadOrdemServico_VlrEntrada},
   uCadOrdemServico_VlrServico in '..\ssfacil\uCadOrdemServico_VlrServico.pas' {frmCadOrdemServico_VlrServico},
   uSel_Filial_Servidor in '..\ssfacil\uSel_Filial_Servidor.pas' {frmSel_Filial_Servidor},
-  UDMLiberacao in '..\ssfacil\UDMLiberacao.pas' {DMLiberacao: TDataModule};
+  UDMLiberacao in '..\ssfacil\UDMLiberacao.pas' {DMLiberacao: TDataModule},
+  USel_Bandeira_Ope in '..\ssfacil\USel_Bandeira_Ope.pas' {frmSel_Bandeira_Ope},
+  uUtilImpressao in '..\ssfacil\uUtilImpressao.pas';
 
 {$R *.res}
 
