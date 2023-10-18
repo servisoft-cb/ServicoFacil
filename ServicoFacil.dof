@@ -90,8 +90,8 @@ MaxStackSize=1048576
 ImageBase=4194304
 ExeDescription=
 [Directories]
-OutputDir=C:\Delphi7\ServicoFacil\EXE
-UnitOutputDir=C:\Delphi7\ServicoFacil\DCU
+OutputDir=D:\Delphi7\ServicoFacil\EXE
+UnitOutputDir=D:\Delphi7\SSFacil\DCU_ServicoFacil
 PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=
@@ -115,7 +115,7 @@ AutoIncBuild=0
 MajorVer=1
 MinorVer=0
 Release=0
-Build=16
+Build=18
 Debug=0
 PreRelease=0
 Special=0
@@ -126,7 +126,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=ServiSoft Informática Ltda.
 FileDescription=
-FileVersion=1.0.0.16
+FileVersion=1.0.0.18
 InternalName=
 LegalCopyright=
 LegalTrademarks=
@@ -140,8 +140,10 @@ c:\program files (x86)\borland\delphi7\Bin\DBWEBXPRT.BPL=Borland Web Wizard Pack
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlUnitOutputDirectory]
-Count=1
-Item0=C:\Delphi7\ServicoFacil\DCU
+Count=2
+Item0=D:\Delphi7\SSFacil\DCU_ServicoFacil
+Item1=C:\Delphi7\ServicoFacil\DCU
 [HistoryLists\hlOutputDirectorry]
-Count=1
-Item0=C:\Delphi7\ServicoFacil\EXE
+Count=2
+Item0=D:\Delphi7\ServicoFacil\EXE
+Item1=C:\Delphi7\ServicoFacil\EXE
